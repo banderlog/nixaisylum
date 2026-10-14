@@ -45,8 +45,14 @@ fi
 
 SSH=(
   ssh
+  # Keep host SSH configuration and unrelated agent keys out of VM connections.
+  -F /dev/null
   -p "$SSH_PORT"
   -i "$VM/id_ed25519"
+  -o IdentitiesOnly=yes
+  # Avoid QoS marking on the local QEMU connection; throughput is deprecated.
+  -o IPQoS=none
+  -o TCPKeepAlive=yes
   -o "UserKnownHostsFile=$VM/known_hosts"
   -o StrictHostKeyChecking=yes
   -o LogLevel=ERROR
@@ -298,10 +304,11 @@ start() {
 
   local vm_pid
   read -r vm_pid < "$PID"
+  local ssh_error="$VM/ssh.log"
 
   echo "Waiting for SSH..."
   for _ in {1..30}; do
-    if "${SSH[@]}" true 2>/dev/null; then
+    if "${SSH[@]}" true 2>"$ssh_error"; then
       echo "VM is ready"
       return 0
     fi
@@ -320,7 +327,9 @@ start() {
   kill "$vm_pid" 2>/dev/null || true
   stop_virtiofsd
   rm -f "$PID"
-  echo "VM failed to respond. Check $LOG" >&2
+  echo "VM SSH readiness check failed. Last SSH error:" >&2
+  cat "$ssh_error" >&2
+  echo "Check $ssh_error, $LOG and $VM/virtiofsd.log" >&2
   exit 1
 }
 

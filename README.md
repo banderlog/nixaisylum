@@ -10,15 +10,6 @@ nix run github:banderlog/nixaisylum init
 nix run github:banderlog/nixaisylum shell
 ```
 
-Add this tou your `~/.ssh/config` to remove keystroke lag:
-
-```bash
-# ~/.ssh/config
-Host 127.0.0.1 localhost
-    NoHostAuthenticationForLocalhost yes
-    IPQoS throughput
-    TCPKeepAlive yes
-```
 
 ## Commands
 
