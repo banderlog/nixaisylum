@@ -27,6 +27,7 @@ destroy           Remove generated state and nixaisylum.vm.nix
 
 Notes:
 
+- It currently works only for `x86_64-linux` systems, because I do not possess other system types to test it there
 - `init` creates the editable `nixaisylum.vm.nix` plus the chosen modules in `nixaisylum/`
 - all build/state artifacts stored in `.nixaisylum-vm/`, except `nixaisylum.vm.nix` and `nixaisylum/`
 - `sync` applies changes to `nixaisylum.vm.nix`
