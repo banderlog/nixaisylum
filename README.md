@@ -29,8 +29,11 @@ Notes:
 
 - `init` creates the editable `nixaisylum.vm.nix` plus the chosen modules in `nixaisylum/`
 - all build/state artifacts stored in `.nixaisylum-vm/`, except `nixaisylum.vm.nix` and `nixaisylum/`
-- the project directory is mounted live at `/workspace`
 - `sync` applies changes to `nixaisylum.vm.nix`
+- the project directory is mounted live at `/workspace` and it is writeable for VM, consider it bidirectional share
+- the guest user uses the host user's UID and primary GID, so rootless `virtiofsd` can create files in `/workspace` (not only on NixOS)
+- all other VM filesystem except the `/tmp` is read only
+- all filesystem except the `/workspace` is ephemerial -- it will be erased on VM reboot
 
 
 ## Templates
