@@ -14,6 +14,8 @@
     projectRoot = readValue ./project-root;
     system = readValue ./system;
     sshPort = nixpkgs.lib.toInt (readValue ./ssh-port);
+    hostUid = nixpkgs.lib.toInt (readValue ./host-uid);
+    hostGid = nixpkgs.lib.toInt (readValue ./host-gid);
   in
   {
     nixosConfigurations.vm = nixpkgs.lib.nixosSystem {
@@ -48,8 +50,15 @@
               settings.PasswordAuthentication = false;
             };
 
+            # Rootless virtiofsd must be able to use the guest's file-owner IDs.
+            # NixOS already defines the users group with GID 100.
+            users.groups = lib.mkIf (hostGid != 100) {
+              hostuser.gid = lib.mkDefault hostGid;
+            };
             users.users.user = {
               isNormalUser = true;
+              uid = lib.mkDefault hostUid;
+              group = lib.mkDefault (if hostGid == 100 then "users" else "hostuser");
               extraGroups = [ "wheel" ];
               shell = pkgs.bashInteractive;
               openssh.authorizedKeys.keyFiles = [ ./id_ed25519.pub ];

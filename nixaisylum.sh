@@ -221,6 +221,8 @@ init() {
   printf '%s' 'x86_64-linux' > "$src/system"
   printf '%s' "$SSH_PORT" > "$PORT_FILE"
   printf '%s' "$SSH_PORT" > "$src/ssh-port"
+  id -u > "$src/host-uid"
+  id -g > "$src/host-gid"
 
   # Generate SSH credentials (client and VM host), reusing any existing keys
   [[ -f "$VM/id_ed25519" ]] || ssh-keygen -q -t ed25519 -N '' -f "$VM/id_ed25519"
@@ -257,6 +259,8 @@ build() {
   printf '%s' "$PWD" > "$src/project-root"
   printf '%s' 'x86_64-linux' > "$src/system"
   printf '%s' "$SSH_PORT" > "$src/ssh-port"
+  id -u > "$src/host-uid"
+  id -g > "$src/host-gid"
 
   nix build "path:$src#nixosConfigurations.vm.config.microvm.declaredRunner" --out-link "$VM/result"
 
@@ -376,6 +380,9 @@ sync() {
   # Compare the file list too: 'sha256sum -c' only checks files it knows about,
   #  so a newly added module would otherwise look like "up to date"
   if [[ -f "$VM/build-hash" ]] \
+    && cmp -s "$NIX_DIR/flake.nix" "$VM/source/flake.nix" \
+    && grep -qxF "$(id -u)" "$VM/source/host-uid" 2>/dev/null \
+    && grep -qxF "$(id -g)" "$VM/source/host-gid" 2>/dev/null \
     && [[ "$(config_files)" == "$(awk '{ print $2 }' "$VM/build-hash")" ]] \
     && sha256sum -c "$VM/build-hash" >/dev/null 2>&1; then
     echo "VM is up to date"
