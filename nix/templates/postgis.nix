@@ -42,7 +42,7 @@ in
     authentication = pkgs.lib.mkOverride 10 ''
       # TYPE  DATABASE        USER            ADDRESS                 METHOD
       local   all             all                                     trust
-      
+
       # IPv4 local connections:
       host    all             all             127.0.0.1/32            trust
 

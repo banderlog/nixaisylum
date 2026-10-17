@@ -1,6 +1,10 @@
 ## ephemerial S3 garage
 { pkgs, ... }:
 let
+  s3key_access = "GK112233445566778899aabbcc";
+  s3key_secret = "aabbccddeeff00112233445566778899aabbccddeeff00112233445566778899";
+  s3endpoint = "127.0.0.1:3900";
+
   init_garage = pkgs.writeShellScriptBin "init_garage" ''
     print_green() {
       echo -e "\n\e[32m$1\e[0m"
@@ -20,10 +24,6 @@ let
     sudo garage bucket allow input --key ${s3key_access} --read --write
     sudo garage bucket allow output --key ${s3key_access} --read --write
   '';
-
-  s3key_access = "GK112233445566778899aabbcc";
-  s3key_secret = "aabbccddeeff00112233445566778899aabbccddeeff00112233445566778899";
-  s3endpoint = "127.0.0.1:3900";
 in
 
 {
@@ -32,6 +32,10 @@ in
     S3_SECRET_KEY = s3key_secret;
     S3_ENDPOINT = "http://${s3endpoint}";
   };
+
+  environment.systemPackages = with pkgs; [
+    init_garage
+  ];
 
   services.garage = {
     enable = true;
