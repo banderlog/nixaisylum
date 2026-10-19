@@ -58,7 +58,8 @@
             users.users.user = {
               isNormalUser = true;
               uid = lib.mkDefault hostUid;
-              group = lib.mkDefault (if hostGid == 100 then "users" else "hostuser");
+              # Beat isNormalUser's mkDefault (1000), while allowing override
+              group = lib.mkOverride 900 (if hostGid == 100 then "users" else "hostuser");
               extraGroups = [ "wheel" ];
               shell = pkgs.bashInteractive;
               openssh.authorizedKeys.keyFiles = [ ./id_ed25519.pub ];
