@@ -9,6 +9,7 @@
   # for custom stuff you will need /workspace/crushrc
   environment.variables = {
     CRUSH_GLOBAL_CONFIG="/workspace";
+    DO_NOT_TRACK="1";
   };
 
 }
