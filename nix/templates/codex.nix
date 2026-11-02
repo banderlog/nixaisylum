@@ -8,6 +8,7 @@
   # for custom stuff you will need /workspace/.codex/config.toml
   environment.variables = {
     CODEX_HOME = "/workspace/.codex";
+    OTEL_SDK_DISABLED = "true";
   };
 
   # Run after the virtiofs mount for /workspace is ready
