@@ -10,6 +10,16 @@ nix run github:banderlog/nixaisylum init
 nix run github:banderlog/nixaisylum shell
 ```
 
+### Nix installation for non NixOS users
+
+```bash
+# from <https://nix.dev/install-nix>
+curl -L https://nixos.org/nix/install | sh -s -- --daemon
+
+# enable flakes system wide
+echo "experimental-features = nix-command flakes" | sudo tee -a /etc/nix/nix.conf
+```
+
 
 ## Commands
 
@@ -62,6 +72,7 @@ Both are git-tracked, so your edits stay under version control. Run
 
 To add a module later, copy it in and add one line to `imports` -- `init` never
 overwrites an existing `nixaisylum.vm.nix`.
+
 
 ### How combining works
 
@@ -148,6 +159,7 @@ Inspired by <https://github.com/hamidr/nixcage> and <https://github.com/razvanz/
 
 ### Why this repo exist
 
+- [Your Container Is Not a Sandbox](https://emirb.github.io/blog/microvm-2026/)
 - nixbox wants you to permit 35 sudo commands to edit your iptables, interfaces and dnsmasq
 - nixcage decided to switch from microVM to containers: <https://github.com/hamidr/nixcage/issues/1>
 - both repos are under heavy AI development and have overblown, non-meatbag-friendly ~1K-line bash scripts at their cores
